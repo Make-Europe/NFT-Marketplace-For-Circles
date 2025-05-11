@@ -6,9 +6,7 @@ A decentralized NFT marketplace built for the ethDam 2025 hackathon, allowing us
 
 ## Overview
 
-This project consists of two main components:
-1. A Solidity smart contract (`ringsNFT.sol`) for managing NFTs on Gnosis Chain
-2. A React frontend application for interacting with the contract
+This project combines the power of Circles UBI (Universal Basic Income) with NFT technology to create a unique marketplace where users can create, buy, and sell NFTs using CRC (Circles) tokens. The platform is built on the Gnosis Chain, providing fast and cost-effective transactions.
 
 ## Features
 
@@ -90,16 +88,19 @@ The smart contract can be interacted with through:
 ## Project Structure
 
 ```
-ethdam/
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── contracts/     # Contract ABIs and addresses
-│   │   └── App.js        # Main application component
-├── contract/              # Smart contract
-│   └── ringsNft.sol      # Main NFT contract
-├── scripts/              # Deployment and interaction scripts
-└── test/                # Contract tests
+client/
+├── src/
+│   ├── components/
+│   │   └── RingsNFTComponent.tsx
+│   ├── config/
+│   │   └── circles.ts
+│   ├── contracts/
+│   │   └── RingsNFT.ts
+│   ├── logo.svg
+│   ├── App.tsx
+│   └── index.tsx
+├── package.json
+└── tsconfig.json
 ```
 
 ## Development
