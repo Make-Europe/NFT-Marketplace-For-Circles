@@ -120,12 +120,6 @@ MIT License
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-# Circles NFT Marketplace
-
-A decentralized NFT marketplace built on the Gnosis Chain using Circles (CRC) for payments.
-
-![Circles NFT Marketplace](client/public/circles-logo.svg)
-
 ## Overview
 
 This project combines the power of Circles UBI (Universal Basic Income) with NFT technology to create a unique marketplace where users can create, buy, and sell NFTs using CRC (Circles) tokens. The platform is built on the Gnosis Chain, providing fast and cost-effective transactions.
