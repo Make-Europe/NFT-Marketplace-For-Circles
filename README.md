@@ -2,8 +2,6 @@
 
 A decentralized NFT marketplace built for the ethDam 2025 hackathon, allowing users to create, buy, and sell Rings NFTs on the Gnosis Chain.
 
-![Rings NFT Marketplace Logo](client/src/logo.svg)
-
 ## Overview
 
 This project combines the power of Circles UBI (Universal Basic Income) with NFT technology to create a unique marketplace where users can create, buy, and sell NFTs using CRC (Circles) tokens. The platform is built on the Gnosis Chain, providing fast and cost-effective transactions.
@@ -14,7 +12,7 @@ This project combines the power of Circles UBI (Universal Basic Income) with NFT
 - Mint multiple NFTs in a single transaction
 - Set custom event IDs for NFT categorization
 - Upload metadata to IPFS
-- Set prices in RING tokens
+- Set prices 
 
 ### Marketplace
 - Browse all available NFTs
@@ -151,11 +149,11 @@ This project combines the power of Circles UBI (Universal Basic Income) with NFT
 - xDAI tokens for gas fees
 - Circles (CRC) tokens for NFT transactions
 
-## Setup Instructions
+## Setup Instructions - Branch Master!
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/Make-Europe/NFT-Marketplace-For-Circles/tree/master>
    cd ethdam
    ```
 
@@ -242,7 +240,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Creator
 
-Built with ❤️ by [Your Name] for ETHDam 2025
+Built with ❤️ by https://make-europe.com for ETHDam 2025
 
 ## Acknowledgments
 
