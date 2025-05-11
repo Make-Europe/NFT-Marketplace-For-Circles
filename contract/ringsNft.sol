@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./node_modules/@openzeppelin/contracts/utils/Counters.sol";
-
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract RingsNFT is ERC721, ERC721URIStorage {
     using Counters for Counters.Counter;
@@ -12,7 +12,8 @@ contract RingsNFT is ERC721, ERC721URIStorage {
     Counters.Counter private _itemsSold;
     Counters.Counter private _eventIds;
 
-    IERC20 public constant RING = IERC20(0x7F3C8E0a35e1Fe68eCBd858423039dF09ce11A74);
+    // Circles token address on Gnosis Chain
+    IERC20 public constant CRC = IERC20(0x29b9a7fbb8995b2423a71cc17cf9810798f6c543);
 
     uint256 public listingPrice = 10 * 10**18;
     uint256 public resellingPrice = 15 * 10**18;
@@ -42,7 +43,7 @@ contract RingsNFT is ERC721, ERC721URIStorage {
         bool resell
     );
 
-    constructor() ERC721("AccEth", "ACC") {
+    constructor() ERC721("RingsNFT", "RNF") {
         contractOwner = msg.sender;
     }
 
@@ -51,17 +52,8 @@ contract RingsNFT is ERC721, ERC721URIStorage {
     }
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-    super._burn(tokenId);
-}
-
-function tokenURI(uint256 tokenId)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
-{
-    return super.tokenURI(tokenId);
-}
+        super._burn(tokenId);
+    }
 
     function tokenURI(uint256 tokenId)
         public
@@ -97,7 +89,7 @@ function tokenURI(uint256 tokenId)
 
     function createToken(uint256 _amount, uint256 eventId, string memory uri, uint256 price) public {
         uint256 totalCost = listingPrice * _amount;
-        require(RING.transferFrom(msg.sender, contractOwner, totalCost), "RING payment failed");
+        require(CRC.transferFrom(msg.sender, contractOwner, totalCost), "CRC payment failed");
 
         for (uint256 i = 0; i < _amount; i++) {
             _tokenIds.increment();
@@ -142,7 +134,7 @@ function tokenURI(uint256 tokenId)
 
     function resellToken(uint256 tokenId, uint256 price) public {
         require(idToMarketItem[tokenId].owner == msg.sender, "Only item owner");
-        require(RING.transferFrom(msg.sender, contractOwner, resellingPrice), "Reselling payment failed");
+        require(CRC.transferFrom(msg.sender, contractOwner, resellingPrice), "Reselling payment failed");
 
         idToMarketItem[tokenId].sold = false;
         idToMarketItem[tokenId].price = price;
@@ -158,7 +150,7 @@ function tokenURI(uint256 tokenId)
         uint256 price = idToMarketItem[tokenId].price;
         address seller = idToMarketItem[tokenId].seller;
 
-        require(RING.transferFrom(msg.sender, seller, price), "RING transfer failed");
+        require(CRC.transferFrom(msg.sender, seller, price), "CRC transfer failed");
 
         idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].sold = true;
@@ -167,8 +159,6 @@ function tokenURI(uint256 tokenId)
 
         _transfer(address(this), msg.sender, tokenId);
     }
-
-    // ---- fetch functions below remain unchanged ----
 
     function fetchMarketItems() public view returns (MarketItem[] memory) {
         uint itemCount = _tokenIds.current();
@@ -204,20 +194,6 @@ function tokenURI(uint256 tokenId)
         return items;
     }
 
-    function fetchAllItems() public view returns (MarketItem[] memory) {
-        uint itemCount = _tokenIds.current();
-        uint currentIndex = 0;
-
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < itemCount; i++) {
-            uint currentId = i + 1;
-            MarketItem storage currentItem = idToMarketItem[currentId];
-            items[currentIndex] = currentItem;
-            currentIndex += 1;
-        }
-        return items;
-    }
-
     function fetchMyNFTs() public view returns (MarketItem[] memory) {
         uint totalItemCount = _tokenIds.current();
         uint itemCount = 0;
@@ -241,76 +217,7 @@ function tokenURI(uint256 tokenId)
         return items;
     }
 
-    function fetchHostsNFTs() public view returns (MarketItem[] memory) {
-        uint totalItemCount = _tokenIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].host == msg.sender) {
-                itemCount += 1;
-            }
-        }
-
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].host == msg.sender) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-
-    function fetchEventNFTs(uint256 eventId) public view returns (MarketItem[] memory) {
-        uint totalItemCount = _tokenIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].eventId == eventId) {
-                itemCount += 1;
-            }
-        }
-
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].eventId == eventId) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-
-    function fetchFreeEventNFTs(uint256 eventId) public view returns (MarketItem[] memory) {
-        uint totalItemCount = _tokenIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].eventId == eventId && idToMarketItem[i + 1].owner == address(this)) {
-                itemCount += 1;
-            }
-        }
-
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].eventId == eventId && idToMarketItem[i + 1].owner == address(this)) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-
-    function fetchItemsListed() public view returns (MarketItem[] memory) {
+    function fetchItemsCreated() public view returns (MarketItem[] memory) {
         uint totalItemCount = _tokenIds.current();
         uint itemCount = 0;
         uint currentIndex = 0;
